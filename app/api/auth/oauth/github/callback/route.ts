@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { type NextRequest, NextResponse } from "next/server"
 import { createOAuthPendingVerification } from "@/lib/supabase/oauth-utils"
 import { cookies } from "next/headers"

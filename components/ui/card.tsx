@@ -1,21 +1,41 @@
 import * as React from "react";
 
-export function Card({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  return <div className={`rounded-xl border bg-white shadow-sm ${className}`}>{children}</div>;
+interface CardProps {
+  className?: string;
+  children: React.ReactNode;
+  onClick?: () => void;
 }
 
-export function CardHeader({ children }: { children: React.ReactNode }) {
-  return <div className="p-4 border-b">{children}</div>;
+export function Card({ className = "", children, onClick }: CardProps) {
+  return (
+    <div
+      onClick={onClick}
+      className={`rounded-xl border bg-white shadow-sm ${className}`}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+    >
+      {children}
+    </div>
+  );
 }
 
-export function CardTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-lg font-semibold">{children}</h3>;
+interface CardSectionProps {
+  children: React.ReactNode;
+  className?: string; // ✅ allow custom styling
 }
 
-export function CardDescription({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-gray-500">{children}</p>;
+export function CardHeader({ children, className = "" }: CardSectionProps) {
+  return <div className={`p-4 border-b ${className}`}>{children}</div>; // ✅
 }
 
-export function CardContent({ children }: { children: React.ReactNode }) {
-  return <div className="p-4">{children}</div>;
+export function CardTitle({ children, className = "" }: CardSectionProps) {
+  return <h3 className={`text-lg font-semibold ${className}`}>{children}</h3>; // ✅
+}
+
+export function CardDescription({ children, className = "" }: CardSectionProps) {
+  return <p className={`text-sm text-gray-500 ${className}`}>{children}</p>; // ✅
+}
+
+export function CardContent({ children, className = "" }: CardSectionProps) {
+  return <div className={`p-4 ${className}`}>{children}</div>; // ✅
 }
