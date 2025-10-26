@@ -1,53 +1,63 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/hooks/use-auth"
-import { Skeleton } from "@/components/ui/skeleton"
-import { User, LogOut, Sparkles } from "lucide-react"
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export function AuthNav() {
-  const { user, loading, logout } = useAuth()
+export default function AuthNav() {
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
-  if (loading) {
-    return <Skeleton className="h-10 w-32" />
-  }
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+    fetchUser();
+  }, []);
 
-  if (user) {
-    return (
-      <>
-        <Link href="/dashboard">
-          <Button size="sm" variant="outline" className="bg-transparent">
-            <User className="h-4 w-4 mr-2" />
-            Dashboard
-          </Button>
-        </Link>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={logout}
-          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Logout
-        </Button>
-      </>
-    )
-  }
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  };
 
   return (
-    <>
-      <Link href="/auth/login">
-        <Button size="sm" variant="outline" className="bg-transparent">
-          Sign In
-        </Button>
-      </Link>
-      <Link href="/chat">
-        <Button size="sm" className="gradient-india text-white hover:opacity-90 shadow-md">
-          <Sparkles className="h-4 w-4 mr-2" />
-          Try AI Assistant
-        </Button>
-      </Link>
-    </>
-  )
+    <nav className="bg-white border-b shadow-sm fixed top-0 left-0 w-full z-50">
+      <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+        <Link href="/" className="text-xl font-semibold text-blue-600">
+          Smart Tourism
+        </Link>
+
+        {user ? (
+          <div className="relative group">
+            <button className="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center font-bold text-gray-700">
+              {user.email?.[0]?.toUpperCase()}
+            </button>
+            <div className="absolute hidden group-hover:block right-0 mt-2 bg-white border rounded-lg shadow-lg w-40">
+              <Link
+                href="/profile"
+                className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <Link
+            href="/auth/login"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Login
+          </Link>
+        )}
+      </div>
+    </nav>
+  );
 }

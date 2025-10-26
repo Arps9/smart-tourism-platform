@@ -1,49 +1,28 @@
 "use client";
-
-import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function SignupPage() {
-  const supabase = createClient();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { error } = await supabase.auth.signUp({ email, password });
-    setMessage(error ? error.message : "✅ Check your email to confirm registration!");
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <form
-        onSubmit={handleSignup}
-        className="w-full max-w-md bg-white shadow-lg rounded-xl p-6 space-y-4"
-      >
-        <h1 className="text-2xl font-bold text-center text-blue-600">Create Account</h1>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full border border-gray-300 rounded-md p-2"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full border border-gray-300 rounded-md p-2"
-        />
-        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-          Sign Up
-        </Button>
-        {message && <p className="text-center text-sm text-gray-600">{message}</p>}
-      </form>
+      <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+          Create an Account
+        </h2>
+        <p className="text-center text-gray-500 mb-6">Start your journey</p>
+
+        <Link href="/auth/login">
+          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-3 mb-3">
+            Continue with Google or GitHub
+          </button>
+        </Link>
+
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Already have an account?{" "}
+          <Link href="/auth/login" className="text-blue-600 hover:underline">
+            Sign In
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
